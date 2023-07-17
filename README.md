@@ -1,4 +1,5 @@
 Procesos, hilos y corrutinas
+
 ● Un caso en el que usarías procesos para resolver un problema y por qué.
 
 R= Podría ser un programa que busque en un documento una palabra que le indique.
