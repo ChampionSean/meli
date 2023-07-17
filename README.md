@@ -1,3 +1,101 @@
+Descripción:
+
+
+Se decidió usar un micro servicio lector para preprocesar el archivo txt, crear el id necesario para consultar las apis de meli y publicar los id en una queue para que otras
+4 instancias de microservicios lectores puedan dividirse el trabajo de consumir las apis y guardad en mongo la información.
+
+Se usó promise all para de forma paralela consultar las ultimas 3 apis de meli.
+
+Se decidio usar mongo ya que la funcionalidad no requiere de relaciones complejas mas que una sola entidad.
+
+para errores en donde el item no se encontró se decidio no guardar el item en mongo, sin embargo si el item si es encontrado en meli y alguno de los siguientes
+valores no es encontrado como currency ese valor se guarda en cadena vacia.
+
+Esta solucion es escalable poniendo mas instancias consumidoras o si el archivo es muy muy grande se puede colocar mas instancias lectoras pero asignando que parte del archivo les toca procesar para no leer lo mismo.
+
+Se adjunta logs de prueba con 4 instancias consumidoras.
+
+Se adjunta diagrama de arquitectura.
+
+Ejemplo de registros en mongo:
+
+ {
+    _id: new ObjectId("64b4d9678af8f9a7686b5ba0"),
+    site: 'MLA',
+    id: 825232465,
+    price: '13805',
+    start_time: '2019-11-14T03:02:42.000Z',
+    name: 'Libros Físicos',
+    __v: 0
+  },
+  {
+    _id: new ObjectId("64b4d9678af8f9a7686b5ba2"),
+    site: 'MLA',
+    id: 683578568,
+    price: '780',
+    start_time: '2017-09-17T23:11:35.000Z',
+    name: 'Libros Físicos',
+    __v: 0
+  },
+  {
+    _id: new ObjectId("64b4d9678af8f9a7686b5ba4"),
+    site: 'MLA',
+    id: 828102088,
+    price: '4693',
+    start_time: '2019-11-30T09:27:48.000Z',
+    name: 'Libros Físicos',
+    __v: 0
+  },
+  {
+    _id: new ObjectId("64b4d9678af8f9a7686b5ba6"),
+    site: 'MLA',
+    id: 843750782,
+    price: '10433.81',
+    start_time: '2020-03-14T01:04:33.000Z',
+    name: 'Tensores Poly V',
+    __v: 0
+  },
+  {
+    _id: new ObjectId("64b4d9678af8f9a7686b5ba8"),
+    site: 'MLA',
+    id: 843244579,
+    price: '2363',
+    start_time: '2020-03-11T15:30:56.000Z',
+    name: 'Libros Físicos',
+    __v: 0
+  },
+  {
+    _id: new ObjectId("64b4d9678af8f9a7686b5baa"),
+    site: 'MLA',
+    id: 719164013,
+    start_time: '2018-04-16T15:41:45.000Z',
+    name: 'Para Asientos',
+    __v: 0
+  }
+
+
+
+
+Para ejecutar el programa:
+
+
+1 Iniciar las imagenes de docker de rabbitmq y mongo db
+
+docker run -d --hostname my-rabbit6 --name some-rabbit8 -p 5672:5672 rabbitmq:3
+export MONGODB_VERSION=6.0-ubi8
+docker run --name mongodb3 -d -p 27017:27017 mongodb/mongodb-community-server:$MONGODB_VERSION
+
+
+2 correr las instancias del proyecto meli con "node index.js"
+
+
+3 correr la instancia meli_sender con "node index.js" para empezar a publicar.
+
+
+
+Prueba teorica:
+
+
 Procesos, hilos y corrutinas
 
 ● Un caso en el que usarías procesos para resolver un problema y por qué.
