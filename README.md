@@ -17,6 +17,8 @@ Se adjunta logs de prueba con 4 instancias consumidoras.
 
 Se adjunta diagrama de arquitectura.
 
+Colocar en la configuración el formato y el separador del archivo ya no me dió tiempo pero estan en la clase Parser, ahí se podría cambiar para que tome esos valores los tome de la configuración cuando se levanta la app pero por el momento se quedó en duro.
+
 Ejemplo de registros en mongo:
 
  {
